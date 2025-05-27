@@ -1,0 +1,143 @@
+#ifndef ESTRUTURA_H
+#define ESTRUTURA_H
+
+#include <iostream>
+using namespace std;
+
+struct Celula {
+    int dado;
+    Celula* prox;
+};
+
+Celula* inserir(int valor, Celula* lista) {
+    if (lista == NULL) {
+        Celula* novo = new Celula{valor, NULL};
+        return novo;
+    }
+    for (Celula* p = lista; p != NULL; p = p->prox) {
+        if (p->dado == valor)
+            return lista;
+    }
+    Celula* novo = new Celula{valor, NULL};
+    Celula* p = lista;
+    while (p->prox) p = p->prox;
+    p->prox = novo;
+    return lista;
+}
+
+void exibir(Celula* lista) {
+    for (Celula* p = lista; p != NULL; p = p->prox)
+        cout << p->dado << " ";
+    cout << endl;
+}
+
+bool estaContido(int valor, Celula* lista) {
+    for (Celula* p = lista; p != NULL; p = p->prox)
+        if (p->dado == valor) return true;
+    return false;
+}
+
+int contar(Celula* lista) {
+    int c = 0;
+    for (Celula* p = lista; p != NULL; p = p->prox) c++;
+    return c;
+}
+
+Celula* remover(int valor, Celula* lista) {
+    while (lista && lista->dado == valor) {
+        Celula* temp = lista;
+        lista = lista->prox;
+        delete temp;
+    }
+    Celula* atual = lista;
+    Celula* anterior = NULL;
+    while (atual) {
+        if (atual->dado == valor) {
+            Celula* temp = atual;
+            anterior->prox = atual->prox;
+            atual = atual->prox;
+            delete temp;
+        } else {
+            anterior = atual;
+            atual = atual->prox;
+        }
+    }
+    return lista;
+}
+
+Celula* removerPares(Celula* lista) {
+    while (lista && lista->dado % 2 == 0) {
+        Celula* temp = lista;
+        lista = lista->prox;
+        delete temp;
+    }
+    Celula* atual = lista;
+    Celula* anterior = NULL;
+    while (atual) {
+        if (atual->dado % 2 == 0) {
+            Celula* temp = atual;
+            anterior->prox = atual->prox;
+            atual = atual->prox;
+            delete temp;
+        } else {
+            anterior = atual;
+            atual = atual->prox;
+        }
+    }
+    return lista;
+}
+
+void exibirComuns(Celula* lista1, Celula* lista2) {
+    cout << "Elementos comuns: ";
+    bool algum = false;
+    for (Celula* p1 = lista1; p1 != NULL; p1 = p1->prox) {
+        if (estaContido(p1->dado, lista2)) {
+            cout << p1->dado << " ";
+            algum = true;
+        }
+    }
+    if (!algum) cout << "(nenhum)";
+    cout << endl;
+}
+
+Celula* unirListas(Celula* lista1, Celula* lista2) {
+    if (!lista1) return lista2;
+    Celula* p = lista1;
+    while (p->prox) p = p->prox;
+    p->prox = lista2;
+    return lista1;
+}
+
+Celula* ordernar(Celula* lista, char tipo) {
+    if (!lista) return lista;
+    bool trocou;
+    do {
+        trocou = false;
+        for (Celula* p = lista; p->prox != NULL; p = p->prox) {
+            if ((tipo == 'c' || tipo == 'C') && p->dado > p->prox->dado) {
+                int tmp = p->dado;
+                p->dado = p->prox->dado;
+                p->prox->dado = tmp;
+                trocou = true;
+            }
+            else if ((tipo == 'd' || tipo == 'D') && p->dado < p->prox->dado) {
+                int tmp = p->dado;
+                p->dado = p->prox->dado;
+                p->prox->dado = tmp;
+                trocou = true;
+            }
+        }
+    } while (trocou);
+    return lista;
+}
+
+Celula* apagarLista(Celula* lista) {
+    while (lista) {
+        Celula* temp = lista;
+        lista = lista->prox;
+        delete temp;
+    }
+    return NULL;
+}
+
+#endif  
